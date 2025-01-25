@@ -5,15 +5,32 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.pointsapp.MainActivity">
+    tools:context="com.example.pointsapp.main.MainActivity">
 
-    <TextView
+    <EditText
+        android:id="@+id/pointsCountEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:hint="@string/main_screen_points_number_text_field_hint"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@id/letsGoButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/letsGoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:enabled="false"
+        android:text="@string/main_screen_lets_got_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/pointsCountEditText"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:enabled="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
