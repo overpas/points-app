@@ -22,10 +22,10 @@ class MainViewModelTest {
 
     @Test
     fun `lets go is enabled when count is set to positive number`() = runTest {
-        viewModel.onCountChanged(10)
-
         viewModel.letsGoEnabled.test {
-            skipItems(1)
+            viewModel.onCountChanged(10)
+            awaitItem()
+
             assertTrue(awaitItem())
         }
     }

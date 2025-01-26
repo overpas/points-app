@@ -1,6 +1,5 @@
 package com.example.pointsapp.points
 
-import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import app.cash.turbine.turbineScope
 import com.example.pointsapp.domain.GetPoints
@@ -14,7 +13,6 @@ import org.junit.Test
 class PointsViewModelTest {
 
     private val testCount = 5
-    private val testSavedStateHandle = SavedStateHandle()
     private val testPoints = listOf(
         Point(1.0, 1.0),
         Point(2.0, 2.0),
@@ -33,7 +31,6 @@ class PointsViewModelTest {
                     }
                 }
             ),
-            savedStateHandle = testSavedStateHandle,
         )
 
         val actual = viewModel.state.value
@@ -53,7 +50,6 @@ class PointsViewModelTest {
                     }
                 }
             ),
-            savedStateHandle = testSavedStateHandle,
         )
 
         turbineScope {
@@ -78,7 +74,6 @@ class PointsViewModelTest {
                     }
                 }
             ),
-            savedStateHandle = testSavedStateHandle,
         )
 
         turbineScope {
@@ -102,7 +97,6 @@ class PointsViewModelTest {
                     }
                 }
             ),
-            savedStateHandle = testSavedStateHandle,
         )
 
         viewModel.events.test {

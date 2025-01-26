@@ -1,6 +1,5 @@
 package com.example.pointsapp.points
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pointsapp.domain.GetPoints
@@ -17,16 +16,12 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-private const val KEY_COUNT = "count"
-
 @HiltViewModel(assistedFactory = PointsViewModel.Factory::class)
 class PointsViewModel @AssistedInject constructor(
-    @Assisted count: Int,
+    @Assisted
+    private val count: Int,
     private val getPoints: GetPoints,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-
-    private val count = savedStateHandle.getStateFlow(KEY_COUNT, count)
 
     private val mutableState = MutableStateFlow<PointsState>(PointsState.Initial)
     val state: StateFlow<PointsState> = mutableState
@@ -41,7 +36,7 @@ class PointsViewModel @AssistedInject constructor(
     private fun loadPoints() {
         viewModelScope.launch {
             mutableState.value = PointsState.Loading
-            getPoints(count.value)
+            getPoints(count)
                 .onSuccess { points ->
                     mutableState.value = PointsState.Content(points)
                 }
