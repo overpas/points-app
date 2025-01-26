@@ -49,27 +49,10 @@
             android:text="@string/points_back_button_text" />
     </LinearLayout>
 
-    <LinearLayout
+    <include
         android:id="@+id/pointsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        layout="@layout/layout_points"
         android:visibility="gone"
-        tools:visibility="visible">
-
-        <View
-            android:id="@+id/tableView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            tools:background="#ff0000" />
-
-        <View
-            android:id="@+id/chartView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            tools:background="#00ff00" />
-    </LinearLayout>
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
