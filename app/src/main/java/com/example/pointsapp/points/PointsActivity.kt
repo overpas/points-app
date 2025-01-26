@@ -3,9 +3,9 @@ package com.example.pointsapp.points
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -25,10 +25,11 @@ import kotlinx.coroutines.flow.onEach
 class PointsActivity : AppCompatActivity() {
 
     private val progressBar: ProgressBar by lazy { findViewById(R.id.progressBar) }
-    private val errorTextView: TextView by lazy { findViewById(R.id.errorTextView) }
+    private val errorLayout: LinearLayout by lazy { findViewById(R.id.errorLayout) }
     private val pointsLayout: LinearLayout by lazy { findViewById(R.id.pointsLayout) }
+    private val goBackButton: Button by lazy { findViewById(R.id.goBackButton) }
 
-    private val pointsViewModel by viewModels<PointsViewModel>(
+    private val viewModel by viewModels<PointsViewModel>(
         extrasProducer = {
             defaultViewModelCreationExtras.withCreationCallback { factory: PointsViewModel.Factory ->
                 factory.create(
@@ -47,13 +48,25 @@ class PointsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        setupListeners()
         onSubscribe()
     }
 
+    private fun setupListeners() {
+        goBackButton.setOnClickListener {
+            viewModel.onGoBackClicked()
+        }
+    }
+
     private fun onSubscribe() {
-        pointsViewModel.state
+        viewModel.state
             .flowWithLifecycle(lifecycle)
             .onEach(::handleState)
+            .launchIn(lifecycleScope)
+
+        viewModel.events
+            .flowWithLifecycle(lifecycle)
+            .onEach(::handleEvent)
             .launchIn(lifecycleScope)
     }
 
@@ -62,12 +75,15 @@ class PointsActivity : AppCompatActivity() {
             is PointsState.Initial -> {
                 handleInitial()
             }
+
             is PointsState.Loading -> {
                 handleLoading()
             }
+
             is PointsState.Error -> {
                 handleError()
             }
+
             is PointsState.Content -> {
                 handleContent(pointsState.points)
             }
@@ -76,27 +92,35 @@ class PointsActivity : AppCompatActivity() {
 
     private fun handleInitial() {
         progressBar.isVisible = false
-        errorTextView.isVisible = false
+        errorLayout.isVisible = false
         pointsLayout.isVisible = false
     }
 
     private fun handleLoading() {
         progressBar.isVisible = true
-        errorTextView.isVisible = false
+        errorLayout.isVisible = false
         pointsLayout.isVisible = false
     }
 
     private fun handleError() {
         progressBar.isVisible = false
-        errorTextView.isVisible = true
+        errorLayout.isVisible = true
         pointsLayout.isVisible = false
     }
 
     @Suppress("UnusedParameter")
     private fun handleContent(points: List<Point>) {
         progressBar.isVisible = false
-        errorTextView.isVisible = false
+        errorLayout.isVisible = false
         pointsLayout.isVisible = true
+    }
+
+    private fun handleEvent(event: PointsEvent) {
+        when (event) {
+            is PointsEvent.NavigateBack -> {
+                finish()
+            }
+        }
     }
 
     companion object {

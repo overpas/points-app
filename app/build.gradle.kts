@@ -44,6 +44,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    lint {
+        // Lint crash
+        abortOnError = false
+    }
 }
 
 kotlin {
@@ -70,6 +74,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
@@ -84,7 +90,7 @@ private fun getBaseUrl(): String {
                 ?.let(File::inputStream)
                 ?.let(::load)
         }
-        return localProperties.getProperty("base.url")
+        localProperties.getProperty("base.url")
             ?: error("Can't find 'base.url' property in local.properties file")
     }
 }
