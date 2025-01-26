@@ -4,4 +4,6 @@
     <string name="main_screen_lets_got_button_text">Let\'s Go</string>
     <string name="points_screen_error_message">Something went wrong. Please, try again later</string>
     <string name="points_back_button_text">Go back</string>
+    <string name="points_x_coordinate_table_head_title">X</string>
+    <string name="points_y_coordinate_table_head_title">Y</string>
 </resources>

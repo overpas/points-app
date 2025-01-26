@@ -9,11 +9,14 @@ import android.widget.ProgressBar
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pointsapp.R
 import com.example.pointsapp.domain.model.Point
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +30,7 @@ class PointsActivity : AppCompatActivity() {
     private val progressBar: ProgressBar by lazy { findViewById(R.id.progressBar) }
     private val errorLayout: LinearLayout by lazy { findViewById(R.id.errorLayout) }
     private val pointsLayout: LinearLayout by lazy { findViewById(R.id.pointsLayout) }
+    private val pointsTableView: RecyclerView by lazy { findViewById(R.id.pointsTableView) }
     private val goBackButton: Button by lazy { findViewById(R.id.goBackButton) }
 
     private val viewModel by viewModels<PointsViewModel>(
@@ -39,6 +43,8 @@ class PointsActivity : AppCompatActivity() {
         },
     )
 
+    private val pointsAdapter = PointsAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -48,6 +54,8 @@ class PointsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        pointsTableView.layoutManager = LinearLayoutManager(this)
+        pointsTableView.adapter = pointsAdapter
         setupListeners()
         onSubscribe()
     }
@@ -108,11 +116,11 @@ class PointsActivity : AppCompatActivity() {
         pointsLayout.isVisible = false
     }
 
-    @Suppress("UnusedParameter")
     private fun handleContent(points: List<Point>) {
         progressBar.isVisible = false
         errorLayout.isVisible = false
         pointsLayout.isVisible = true
+        pointsAdapter.submitList(points)
     }
 
     private fun handleEvent(event: PointsEvent) {
