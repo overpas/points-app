@@ -9,7 +9,6 @@ import android.widget.ProgressBar
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -32,6 +31,7 @@ class PointsActivity : AppCompatActivity() {
     private val pointsLayout: LinearLayout by lazy { findViewById(R.id.pointsLayout) }
     private val pointsTableView: RecyclerView by lazy { findViewById(R.id.pointsTableView) }
     private val goBackButton: Button by lazy { findViewById(R.id.goBackButton) }
+    private val chartView: PointsChartView by lazy { findViewById(R.id.chartView) }
 
     private val viewModel by viewModels<PointsViewModel>(
         extrasProducer = {
@@ -121,6 +121,7 @@ class PointsActivity : AppCompatActivity() {
         errorLayout.isVisible = false
         pointsLayout.isVisible = true
         pointsAdapter.submitList(points)
+        chartView.setPoints(points)
     }
 
     private fun handleEvent(event: PointsEvent) {

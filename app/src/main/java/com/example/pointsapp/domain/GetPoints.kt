@@ -10,4 +10,5 @@ class GetPoints @Inject constructor(
 
     suspend operator fun invoke(count: Int): Result<List<Point>> =
         pointsRepository.get(count)
+            .map { points -> points.sortedBy(Point::x) }
 }
