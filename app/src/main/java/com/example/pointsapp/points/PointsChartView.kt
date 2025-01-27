@@ -110,7 +110,116 @@ class PointsChartView(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        // TODO Handle 0
+        if (xSpan == 0.0 && ySpan == 0.0) {
+            drawSinglePointChart(canvas)
+        } else if (xSpan == 0.0) {
+            drawVerticalChart(canvas)
+        } else if (ySpan == 0.0) {
+            drawHorizontalChart(canvas)
+        } else {
+            drawRegularChart(canvas)
+        }
+    }
+
+    private fun drawSinglePointChart(canvas: Canvas) {
+        val xAxisX: Float
+        val xValue: Float
+        if (minX < 0) {
+            xAxisX = width.toFloat()
+            xValue = 0f
+        } else if (minX > 0) {
+            xAxisX = 0f
+            xValue = width.toFloat()
+        } else {
+            xAxisX = width / 2f
+            xValue = width / 2f
+        }
+        val yAxisY: Float
+        val yValue: Float
+        if (minY < 0) {
+            yAxisY = 0f
+            yValue = height.toFloat()
+        } else if (minY > 0) {
+            yAxisY = height.toFloat()
+            yValue = 0f
+        } else {
+            yAxisY = height / 2f
+            yValue = height / 2f
+        }
+        // Draw axes
+        canvas.drawLine(xAxisX, 0f, xAxisX, height.toFloat(), axisPaint)
+        canvas.drawLine(0f, yAxisY, width.toFloat(), yAxisY, axisPaint)
+        // Draw points with lines
+        points?.forEach { point ->
+            canvas.drawCircle(xValue, yValue, pointRadius, pointPaint)
+        }
+    }
+
+    private fun drawVerticalChart(canvas: Canvas) {
+        val xAxisX: Float
+        val xValue: Float
+        if (minX < 0) {
+            xAxisX = width.toFloat()
+            xValue = 0f
+        } else if (minX > 0) {
+            xAxisX = 0f
+            xValue = width.toFloat()
+        } else {
+            xAxisX = width / 2f
+            xValue = width / 2f
+        }
+        // Draw axes
+        val yScale = height / ySpan.toFloat()
+        val yAxisY = yOffset.toFloat() * yScale
+        canvas.drawLine(xAxisX, 0f, xAxisX, height.toFloat(), axisPaint)
+        canvas.drawLine(0f, yAxisY, width.toFloat(), yAxisY, axisPaint)
+        // Draw points with lines
+        var lastX: Float? = null
+        var lastY: Float? = null
+        points?.forEach { point ->
+            val y = (point.y + yOffset).toFloat() * yScale
+            if (lastX != null && lastY != null) {
+                canvas.drawLine(lastX, lastY, xValue, y, linePaint)
+            }
+            canvas.drawCircle(xValue, y, pointRadius, pointPaint)
+            lastX = xValue
+            lastY = y
+        }
+    }
+
+    private fun drawHorizontalChart(canvas: Canvas) {
+        val yAxisY: Float
+        val yValue: Float
+        if (minY < 0) {
+            yAxisY = 0f
+            yValue = height.toFloat()
+        } else if (minY > 0) {
+            yAxisY = height.toFloat()
+            yValue = 0f
+        } else {
+            yAxisY = height / 2f
+            yValue = height / 2f
+        }
+        // Draw axes
+        val xScale = width / xSpan.toFloat()
+        val xAxisX = xOffset.toFloat() * xScale
+        canvas.drawLine(xAxisX, 0f, xAxisX, height.toFloat(), axisPaint)
+        canvas.drawLine(0f, yAxisY, width.toFloat(), yAxisY, axisPaint)
+        // Draw points with lines
+        var lastX: Float? = null
+        var lastY: Float? = null
+        points?.forEach { point ->
+            val x = (point.x + xOffset).toFloat() * xScale
+            if (lastX != null && lastY != null) {
+                canvas.drawLine(lastX, lastY, x, yValue, linePaint)
+            }
+            canvas.drawCircle(x, yValue, pointRadius, pointPaint)
+            lastX = x
+            lastY = yValue
+        }
+    }
+
+    private fun drawRegularChart(canvas: Canvas) {
         val xScale = width / xSpan.toFloat()
         val yScale = height / ySpan.toFloat()
         // Draw axes
@@ -134,6 +243,7 @@ class PointsChartView(
     }
 
     fun setPoints(points: List<Point>) {
+        require(points.isNotEmpty()) { "Points list cannot be empty" }
         this.points = points
         minX = points.minBy(Point::x).x
         minY = points.minBy(Point::y).y
