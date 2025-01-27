@@ -6,7 +6,7 @@ An Android app displaying points fetched from REST API in the form of a table an
 ### Run
 
 1. Open the project in Android Studio
-2. *IMPORTANT!* Add `base.url=[YOUR_BASE_URL_HERE]` to `local.properties` file
+2. **IMPORTANT!** Add `base.url=[YOUR_BASE_URL_HERE]` to `local.properties` file
 3. Run `app` configuration
 
 ### Tech Stack
